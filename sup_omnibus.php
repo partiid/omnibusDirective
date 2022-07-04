@@ -61,7 +61,7 @@ class Sup_omnibus extends Module
      */
     public function install()
     {
-        require_once(__DIR__ . '/sql/install.php');
+        include_once(__DIR__ . '/sql/install.php');
 
         return parent::install() &&
             $this->registerHook('header') &&

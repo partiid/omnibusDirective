@@ -26,12 +26,11 @@
 $sql = array();
 
 $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'sup_omnibus` (
-    `id_sup_omnibus` int(11) NOT NULL AUTO_INCREMENT,
+    `id_sup_omnibus` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `id_product` int(11) NOT NULL, 
     `date_upd` date NOT NULL, 
     `price` float(16) NOT NULL
-    PRIMARY KEY  (`id_sup_omnibus`)
-) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
+   ';
 
 foreach ($sql as $query) {
     if (Db::getInstance()->execute($query) == false) {

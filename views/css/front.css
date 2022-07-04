@@ -29,17 +29,11 @@
     
     
     
-    background: rgb(45, 45, 113, 0.8);
+    
     color: white;
     padding: 8px 4px;
     font-size: 8px;
-    backdrop-filter: saturate(180%) blur(10px);
-    -webkit-backdrop-filter: saturate(180%) blur(10px);
+    
+    
 
 }
-@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
-    .omnibus-container {
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
-    }
-  }
