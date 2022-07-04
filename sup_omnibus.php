@@ -24,6 +24,8 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
+use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductPresenter;
+
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -202,8 +204,9 @@ class Sup_omnibus extends Module
        
 
         if(Validate::isLoadedObject($product)){
+            $product_price_w_tax = trim(str_replace((string)$this->context->currency->sign, "" ,str_replace(",", ".", Tools::displayPrice($product->getPrice(true, null, 6, null, false, false), $this->context->currency))), " "); 
             $query = "INSERT INTO "._DB_PREFIX_."sup_omnibus (id_product, date_upd, price) VALUES 
-            (".$product->id.", now(), ".$product->price.")";  
+            (".$product->id.", now(), '".$product_price_w_tax."')";  
             $db->execute($query);       
 
         }
@@ -219,15 +222,50 @@ class Sup_omnibus extends Module
         $query = "SELECT  MIN(price) FROM " . _DB_PREFIX_ . "sup_omnibus WHERE id_product=" .$product->id_product . " AND date_upd BETWEEN  CURRENT_DATE - INTERVAL 30 DAY AND CURRENT_DATE"; 
 
         $result = $db->getValue($query); 
+        $prod = new Product((int)$product->id_product); 
+        
+
+        //calculate product tax rate 
+        $priceWithTax = Tools::displayPrice($prod->getPrice(true, null, 6, null, false, false), $this->context->currency);
+        $priceWithoutTax = Tools::displayPrice($prod->getPrice(false, null, 6, null, false, false), $this->context->currency);
+        
+
+
+
+        //$tax = new TaxRule($product['id_tax_rules_group'], $this->context->language->id); 
+        //var_dump($tax);
+        $tax_value = $this->calculateTaxRate((float)$priceWithTax, (float)$priceWithoutTax); 
         
         if(empty($result)){
             $result = $product->price;
         }
         $this->context->smarty->assign(array(
             'min_price' => $result
+
         ));
+
         return $this->display(__FILE__, 'price.tpl');
     }
+    private function calculateTaxRate($a, $b)
+    {
+        
+        $total = $a; 
+        $pre_tax = $b; 
+        
+        $tax_value = $total - $pre_tax; //wartość podatku 
+
+        return $tax_value; 
+        
+        
+        
+
+        
+
+        
+        
+    }
+
+
     
     private function getDb()
     {
