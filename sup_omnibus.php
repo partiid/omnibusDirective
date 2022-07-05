@@ -237,7 +237,7 @@ class Sup_omnibus extends Module
         if(empty($result)){
             $result = $priceWithTax;
         }
-        var_dump($product->price);
+        
         $this->context->smarty->assign(array(
             'min_price' => $result
 
