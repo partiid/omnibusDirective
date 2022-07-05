@@ -204,7 +204,7 @@ class Sup_omnibus extends Module
        
 
         if(Validate::isLoadedObject($product)){
-            $product_price_w_tax = trim(str_replace((string)$this->context->currency->sign, "" ,str_replace(",", ".", Tools::displayPrice($product->getPrice(true, null, 6, null, false, false), $this->context->currency))), " "); 
+            $product_price_w_tax = trim(str_replace((string)$this->context->currency->symbol, "" ,str_replace(",", ".", Tools::displayPrice($product->getPrice(true, null, 6, null, false, false), $this->context->currency))), " "); 
             $query = "INSERT INTO "._DB_PREFIX_."sup_omnibus (id_product, date_upd, price) VALUES 
             (".$product->id.", now(), '".$product_price_w_tax."')";  
             $db->execute($query);       
@@ -226,10 +226,8 @@ class Sup_omnibus extends Module
         
 
         //calculate product tax rate 
-        $priceWithTax = Tools::displayPrice($prod->getPrice(true, null, 6, null, false, false), $this->context->currency);
-        $priceWithoutTax = Tools::displayPrice($prod->getPrice(false, null, 6, null, false, false), $this->context->currency);
-        
-
+        $priceWithTax = Tools::displayPrice($prod->getPrice(true, null, 2, null, false, false), $this->context->currency);
+        $priceWithoutTax = Tools::displayPrice($prod->getPrice(false, null, 2, null, false, false), $this->context->currency);
 
 
         //$tax = new TaxRule($product['id_tax_rules_group'], $this->context->language->id); 
@@ -237,8 +235,9 @@ class Sup_omnibus extends Module
         $tax_value = $this->calculateTaxRate((float)$priceWithTax, (float)$priceWithoutTax); 
         
         if(empty($result)){
-            $result = $product->price;
+            $result = $priceWithTax;
         }
+        var_dump($product->price);
         $this->context->smarty->assign(array(
             'min_price' => $result
 
